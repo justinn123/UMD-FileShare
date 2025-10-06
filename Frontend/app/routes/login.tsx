@@ -1,54 +1,73 @@
+import AuthLayout from "../components/authLayout";
+import AuthInput from "../components/authInput";
 import type { Route } from "./+types/login";
 import { useState } from "react";
 
-export function meta({ }: Route.MetaArgs) {
+export function meta({}: Route.MetaArgs) {
   return [
     { title: "Login - FileShare" },
-    { name: "description", content: "Login to your FileShare account" },
+    { name: "description", content: "Log in to your FileShare account" },
   ];
 }
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({ email: "", password: "" });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Email:", email, "Password:", password);
+    const newErrors = { email: "", password: "" };
+
+    if (!email.trim()) newErrors.email = "Email is required.";
+    else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = "Please enter a valid email.";
+    if (!password) newErrors.password = "Password is required.";
+
+    setErrors(newErrors);
+
+    if (Object.values(newErrors).some((err) => err !== "")) return;
+    console.log("Login successful:", { email, password });
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
-      <div className="max-w-md w-full bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6 text-center">Sign In</h1>
-        <p className="text-gray-600 dark:text-gray-300 mb-6 text-center">
-          Enter your email and password to access your account
-        </p>
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email Address"
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500 text-gray-900 dark:text-gray-100 caret-black dark:caret-white"
-            required
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500 text-gray-900 dark:text-gray-100 caret-black dark:caret-white"
-            required
-          />
-          <button className="w-full bg-gray-900 dark:bg-gray-100 hover:bg-black dark:hover:bg-gray-300 text-white dark:text-gray-900 font-semibold py-2 px-4 rounded-lg transition-colors">
-            Login
-          </button>
-        </form>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-4 text-center">
-          Don't have an account? <a href="/signup" className="underline text-gray-700 dark:text-gray-200">Sign up</a>
-        </p>
-      </div>
-    </div>
+    <AuthLayout
+      title="Login"
+      subtitle="Welcome back! Log in to your account"
+      footerText="Don't have an account?"
+      footerLink="/signup"
+      footerLinkText="Sign up"
+    >
+      <form onSubmit={handleSubmit} noValidate className="space-y-4">
+        <AuthInput
+          type="email"
+          placeholder="Email Address"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (errors.email) setErrors({ ...errors, email: "" });
+          }}
+          error={errors.email}
+        />
+        <AuthInput
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            if (errors.password) setErrors({ ...errors, password: "" });
+          }}
+          error={errors.password}
+        />
+        <button
+          type="submit"
+          className="w-full font-semibold py-2 px-4 rounded-lg transition-colors 
+            bg-gray-900 dark:bg-gray-100 hover:bg-black dark:hover:bg-gray-300 
+            text-white dark:text-gray-900"
+        >
+          Log In
+        </button>
+      </form>
+    </AuthLayout>
   );
 }
