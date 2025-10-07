@@ -3,7 +3,7 @@ import AuthInput from "../components/authInput";
 import type { Route } from "./+types/signup";
 import { useState } from "react";
 
-export function meta({}: Route.MetaArgs) {
+export function meta({ }: Route.MetaArgs) {
   return [
     { title: "Login - FileShare" },
     { name: "description", content: "Log in to your FileShare account" },
@@ -16,7 +16,7 @@ export default function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "", confirmPassword: "" });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors = { email: "", password: "", confirmPassword: "" };
 
@@ -32,7 +32,25 @@ export default function Signup() {
     setErrors(newErrors);
 
     if (Object.values(newErrors).some((err) => err !== "")) return;
-    console.log("Signup successful:", { email, password });
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/signup', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("Signup successful:", data);
+        alert("Account created successfully");
+      } else {
+        alert(data.message || "Signup failed");
+      }
+    } catch (err) {
+      console.error("Error during signup:", err);
+      alert("An error occurred. Please try again.");
+    }
   };
 
   return (
