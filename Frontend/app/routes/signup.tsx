@@ -16,7 +16,7 @@ export default function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "", confirmPassword: "" });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors = { email: "", password: "", confirmPassword: "" };
 
@@ -32,7 +32,25 @@ export default function Signup() {
     setErrors(newErrors);
 
     if (Object.values(newErrors).some((err) => err !== "")) return;
-    console.log("Signup successful:", { email, password });
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setErrors((prev) => ({ ...prev, email: data.message}));
+        return;
+      }
+
+      console.log("Signup successful:", data);
+      alert("Signup successful! Please log in.");
+    } catch (error) {
+      console.error("Signup failed:", error);
+    }
   };
 
   return (
