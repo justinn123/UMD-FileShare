@@ -3,7 +3,7 @@ import AuthInput from "../components/authInput";
 import type { Route } from "./+types/signup";
 import { useState } from "react";
 
-export function meta({}: Route.MetaArgs) {
+export function meta({ }: Route.MetaArgs) {
   return [
     { title: "Login - FileShare" },
     { name: "description", content: "Log in to your FileShare account" },
