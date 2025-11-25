@@ -1,0 +1,96 @@
+import type { Route } from "./+types/dashboard";
+import { useState } from "react";
+import { useEffect } from "react"
+import { useNavigate } from "react-router";
+
+export function meta({ }: Route.MetaArgs) {
+  return [
+    { title: "Dashboard" },
+    { name: "description", content: "Welcome to UMD FileShare Dashboard!" },
+  ];
+}
+
+export default function Dashboard() {
+  const [user, setUser] = useState<{id?: string; email?: string }>({});
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    fetch("http://localhost:5000/api/auth/verify", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Token invalid");
+        return res.json();
+      })
+      .then((data) => setUser(data.user))
+      .catch(() => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/login");
+      });
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+      <nav className="w-full border-b border-gray-200 dark:border-gray-700 py-4 px-6 flex items-center justify-between">
+        <h1 className="text-2xl font-bold">UMD FileShare</h1>
+
+        <div className="space-x-4">
+          <a
+            href="/upload"
+            className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white"
+          >
+            Upload File
+          </a>
+
+          <button
+            onClick={() => {
+              localStorage.removeItem("token");
+              localStorage.removeItem("user");
+              window.location.href = "/login";
+            }}
+            className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+          >
+            Logout
+          </button>
+        </div>
+      </nav>
+
+      <section className="px-6 py-16 text-center">
+        <h2 className="text-3xl font-bold">Welcome back, {user.email}</h2>
+        <p className="text-gray-600 dark:text-gray-300 mt-2">
+          What would you like to do today?
+        </p>
+      </section>
+
+      <section className="px-6 grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
+          <h3 className="text-xl font-semibold mb-2">Upload Files</h3>
+          <p className="text-gray-600 dark:text-gray-400">
+            Upload slides, labs, notes, or assignments for your classes.
+          </p>
+        </div>
+
+        <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
+          <h3 className="text-xl font-semibold mb-2">Browse Classes</h3>
+          <p className="text-gray-600 dark:text-gray-400">
+            Find uploaded materials by course and department.
+          </p>
+        </div>
+
+        <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
+          <h3 className="text-xl font-semibold mb-2">My Files</h3>
+          <p className="text-gray-600 dark:text-gray-400">
+            Manage files you've uploaded.
+          </p>
+        </div>
+      </section>
+    </div>
+  );
+}

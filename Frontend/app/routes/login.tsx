@@ -16,7 +16,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "" });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors = { email: "", password: "" };
 
@@ -27,7 +27,27 @@ export default function Login() {
     setErrors(newErrors);
 
     if (Object.values(newErrors).some((err) => err !== "")) return;
-    console.log("Login successful:", { email, password });
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password})
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setErrors({ ...errors, password: data.message || "Login failed. Please try again." });
+        return;
+      }
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      window.location.href = "/dashboard";
+    } catch (err) {
+      console.error("Login error:", err);
+      setErrors({ ...errors, password: "Server Error. Please try again later." });
+    }
   };
 
   return (
