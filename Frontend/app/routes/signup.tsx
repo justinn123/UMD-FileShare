@@ -47,7 +47,11 @@ export default function Signup() {
       }
 
       console.log("Signup successful:", data);
-      alert("Signup successful! Please log in.");
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      window.location.href = "/dashboard";
     } catch (error) {
       console.error("Signup failed:", error);
     }

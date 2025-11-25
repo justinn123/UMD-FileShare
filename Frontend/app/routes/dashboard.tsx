@@ -11,6 +11,7 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export default function Dashboard() {
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<{id?: string; email?: string }>({});
   const navigate = useNavigate();
 
@@ -33,8 +34,12 @@ export default function Dashboard() {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         navigate("/login");
-      });
+      }).finally(() => setLoading(false));
   }, []);
+
+  if (loading) {
+    return <div className="text-center mt-20">Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
