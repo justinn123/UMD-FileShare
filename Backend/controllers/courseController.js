@@ -1,14 +1,25 @@
 import express from "express";
-import Course from "../models/course.model.js";
+import Course from "../models/Course.js";
 
 const router = express.Router();
 
-// GET /api/courses?limit=10
+// GET /api/courses?limit=10&search=...
 router.get("/", async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || "";
 
-    const courses = await Course.find().limit(limit);
+    // Build query: if search is empty, fetch all; otherwise filter by name/title
+    const query = search
+      ? {
+          $or: [
+            { name: { $regex: search, $options: "i" } },
+            { title: { $regex: search, $options: "i" } }
+          ]
+        }
+      : {};
+
+    const courses = await Course.find(query).limit(limit);
 
     res.json(courses);
   } catch (err) {
