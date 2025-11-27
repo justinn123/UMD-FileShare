@@ -9,6 +9,11 @@ router.get("/", async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const search = req.query.search || "";
 
+    if (!search || search.trim() === "") {
+      const randomCourses = await Course.aggregate([{ $sample: { size: 10 } }]);
+      return res.json(randomCourses);
+    }
+
     // Build query: if search is empty, fetch all; otherwise filter by name/title
     const query = search
       ? {
