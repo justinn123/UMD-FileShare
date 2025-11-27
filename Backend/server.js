@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
-import coursesRoutes from "./controllers/courseController.js";
+import coursesRoutes from "./routes/courseRoutes.js";
 
 dotenv.config();
 const app = express();

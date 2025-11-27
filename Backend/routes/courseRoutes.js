@@ -1,33 +1,12 @@
 import express from "express";
-import Course from "../models/course.model.js";
+import { getCourses, getCourseByName } from "../controllers/courseController.js";
 
 const router = express.Router();
 
-// GET /api/courses?limit=10
-router.get("/", async (req, res) => {
-  try {
-    const limit = parseInt(req.query.limit) || 10;
+// List/search courses
+router.get("/", getCourses);
 
-    const courses = await Course.find().limit(limit);
-
-    res.json(courses);
-  } catch (err) {
-    console.error("Error fetching courses:", err);
-    res.status(500).json({ error: "Server error" });
-  }
-});
-
-// GET /api/courses/:id
-router.get("/:id", async (req, res) => {
-  try {
-    const course = await Course.findById(req.params.id);
-    if (!course) return res.status(404).json({ error: "Course not found" });
-
-    res.json(course);
-  } catch (err) {
-    console.error("Error fetching course:", err);
-    res.status(500).json({ error: "Server error" });
-  }
-});
+// Get single course by name
+router.get("/:name", getCourseByName);
 
 export default router;
