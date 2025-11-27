@@ -1,4 +1,5 @@
 import type { Route } from "./+types/home";
+import {Link} from "react-router"
 import HomeFeatures from "~/components/homeFeatures";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
@@ -33,21 +34,21 @@ export default function HomePage() {
           <h1 className="text-2xl font-bold">UMD FileShare</h1>
 
           <div className="space-x-4">
-            <a
-              href="/login"
+            <Link
+              to="/login"
               className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600
                        hover:bg-gray-200 dark:hover:bg-gray-700 transition"
             >
               Login
-            </a>
+            </Link>
 
-            <a
-              href="/signup"
+            <Link
+              to="/signup"
               className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 
                        text-white transition"
             >
               Sign Up
-            </a>
+            </Link>
           </div>
         </nav>
 
@@ -62,13 +63,13 @@ export default function HomePage() {
             clean and powerful platform built for students.
           </p>
 
-          <a
-            href="/signup"
+          <Link
+            to="/signup"
             className="px-8 py-3 text-lg rounded-lg bg-red-500 hover:bg-red-600 
                      text-white transition"
           >
             Get Started
-          </a>
+          </Link>
         </section>
 
         {/* FEATURES */}

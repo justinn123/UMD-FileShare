@@ -1,4 +1,5 @@
 import type { Route } from "./+types/dashboard";
+import { Link } from "react-router";
 import { useState } from "react";
 import { useEffect } from "react"
 import { useNavigate } from "react-router";
@@ -63,12 +64,15 @@ export default function Dashboard() {
             </p>
           </div>
 
-          <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
-            <h3 className="text-xl font-semibold mb-2">Browse Classes</h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              Find uploaded materials by course and department.
-            </p>
-          </div>
+          <Link to="/courses">
+            <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow  hover:shadow-xl hover:scale-[1.02] hover:rotate-1 transition-all duration-300 ease-out cursor-pointer">
+
+              <h3 className="text-xl font-semibold mb-2">Browse Classes</h3>
+              <p className="text-gray-600 dark:text-gray-400">
+                Find uploaded materials by course and department.
+              </p>
+            </div>
+          </Link>
 
           <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
             <h3 className="text-xl font-semibold mb-2">My Files</h3>
