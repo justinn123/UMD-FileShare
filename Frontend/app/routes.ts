@@ -7,4 +7,5 @@ export default [
     route("dashboard", "routes/dashboard.tsx"),
     route("courses", "routes/courses/_index.tsx"),
     route("courses/:name", "routes/courses/$name.tsx"),
+    route("*", "routes/notFound.tsx"),
 ] satisfies RouteConfig;

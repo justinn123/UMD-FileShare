@@ -2,6 +2,8 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 import authRoutes from "./routes/authRoutes.js";
 import coursesRoutes from "./routes/courseRoutes.js";
 
@@ -13,6 +15,10 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", coursesRoutes);
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 mongoose.connect(process.env.MONGO_URL).then(() => {
   console.log("Connected to MongoDB");

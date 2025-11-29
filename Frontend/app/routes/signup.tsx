@@ -1,5 +1,6 @@
-import AuthLayout from "../components/authLayout";
-import AuthInput from "../components/authInput";
+import AuthLayout from "../components/auth/authLayout";
+import AuthInput from "../components/auth/authInput";
+import Footer from "~/components/footer";
 import type { Route } from "./+types/signup";
 import { useState } from "react";
 
@@ -42,7 +43,7 @@ export default function Signup() {
       const data = await res.json();
 
       if (!res.ok) {
-        setErrors((prev) => ({ ...prev, email: data.message}));
+        setErrors((prev) => ({ ...prev, email: data.message }));
         return;
       }
 
@@ -58,53 +59,58 @@ export default function Signup() {
   };
 
   return (
-    <AuthLayout
-      title="Sign Up"
-      subtitle="Create a new account to get started"
-      footerText="Already have an account?"
-      footerLink="/login"
-      footerLinkText="Log in"
-    >
-      <form onSubmit={handleSubmit} noValidate className="space-y-4">
-        <AuthInput
-          type="email"
-          placeholder="Email Address"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            if (errors.email) setErrors({ ...errors, email: "" });
-          }}
-          error={errors.email}
-        />
-        <AuthInput
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-            if (errors.password) setErrors({ ...errors, password: "" });
-          }}
-          error={errors.password}
-        />
-        <AuthInput
-          type="password"
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          onChange={(e) => {
-            setConfirmPassword(e.target.value);
-            if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: "" });
-          }}
-          error={errors.confirmPassword}
-        />
-        <button
-          type="submit"
-          className="w-full font-semibold py-2 px-4 rounded-lg transition-colors 
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+      <div className="flex flex-grow items-center justify-center">
+        <AuthLayout
+          title="Sign Up"
+          subtitle="Create a new account to get started"
+          footerText="Already have an account?"
+          footerLink="/login"
+          footerLinkText="Log in"
+        >
+          <form onSubmit={handleSubmit} noValidate className="space-y-4">
+            <AuthInput
+              type="email"
+              placeholder="Email Address"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (errors.email) setErrors({ ...errors, email: "" });
+              }}
+              error={errors.email}
+            />
+            <AuthInput
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                if (errors.password) setErrors({ ...errors, password: "" });
+              }}
+              error={errors.password}
+            />
+            <AuthInput
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+                if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: "" });
+              }}
+              error={errors.confirmPassword}
+            />
+            <button
+              type="submit"
+              className="w-full font-semibold py-2 px-4 rounded-lg transition-colors 
             bg-gray-900 dark:bg-gray-100 hover:bg-black dark:hover:bg-gray-300 
             text-white dark:text-gray-900"
-        >
-          Sign Up
-        </button>
-      </form>
-    </AuthLayout>
+            >
+              Sign Up
+            </button>
+          </form>
+        </AuthLayout>
+      </div>
+      <Footer/>
+    </div>
   );
 }

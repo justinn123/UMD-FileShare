@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useEffect } from "react"
 import { useNavigate } from "react-router";
 import Footer from "~/components/footer";
-import Navbar from "~/components/navbar";
+import Navbar from "~/components/header/navbar";
+import HomeFeatures from "~/components/homeFeatures";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -51,35 +52,29 @@ export default function Dashboard() {
 
         <section className="px-6 py-16 text-center">
           <h2 className="text-3xl font-bold overflow-hidden text-ellipsis ">Welcome back, {user.email}</h2>
-          <p className="text-gray-600 dark:text-gray-300 mt-2">
+          <p className="text-lg text-gray-600 dark:text-gray-300 mt-2">
             What would you like to do today?
           </p>
         </section>
 
         <section className="px-6 grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
-            <h3 className="text-xl font-semibold mb-2">Upload Files</h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              Upload slides, labs, notes, or assignments for your classes.
-            </p>
-          </div>
-
+          <HomeFeatures
+            home={false}
+            title="Saved Courses"
+            description="Browse slides, labs, notes, or assignments for your classes."
+          />
           <Link to="/courses">
-            <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow  hover:shadow-xl hover:scale-[1.02] hover:rotate-1 transition-all duration-300 ease-out cursor-pointer">
-
-              <h3 className="text-xl font-semibold mb-2">Browse Classes</h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                Find uploaded materials by course and department.
-              </p>
-            </div>
+            <HomeFeatures
+              home={false}
+              title="Browse Classes"
+              description="Find uploaded materials by course and department."
+            />
           </Link>
-
-          <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
-            <h3 className="text-xl font-semibold mb-2">My Files</h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              Manage files you've uploaded.
-            </p>
-          </div>
+          <HomeFeatures
+            home={false}
+            title="My Files"
+            description="Manage all the files you've uploaded."
+          />
         </section>
       </div>
       <Footer />

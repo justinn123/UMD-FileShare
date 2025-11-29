@@ -80,17 +80,20 @@ export default function HomePage() {
 
             {/* Feature 1 */}
             <HomeFeatures
+              home={true}
               title="Fast Uploads"
               description="Upload notes, slides, labs, and past assignments quickly with an intuitive UI."
             />
             {/* Feature 2 */}
             <HomeFeatures
+              home={true}
               title="Course-Organized"
               description="Every file is organized by class so students can find exactly what they need."
             />
 
             {/* Feature 3 */}
             <HomeFeatures
+              home={true}
               title="Community Driven"
               description="Students support each other by sharing materials that help everyone succeed."
             />

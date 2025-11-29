@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import Navbar from "~/components/navbar";
+import Navbar from "~/components/header/navbar";
 import { useDebounce } from "use-debounce";
 import Footer from "~/components/footer";
 
