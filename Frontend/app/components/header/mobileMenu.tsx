@@ -12,10 +12,10 @@ export default function MobileMenu({ open }: mobileMenuProps) {
         `}
     >
       <a
-        href="/upload"
+        href="/courses"
         className="block px-4 py-3 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
       >
-        Upload File
+        Find Course
       </a>
 
       <button

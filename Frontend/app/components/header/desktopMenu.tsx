@@ -2,10 +2,10 @@ export default function DesktopMenu() {
   return (
     <div className="hidden md:flex space-x-4">
       <a
-        href="/upload"
+        href="/courses"
         className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white"
       >
-        Upload File
+        Find Course
       </a>
 
       <button
