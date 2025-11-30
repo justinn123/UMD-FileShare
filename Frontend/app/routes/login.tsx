@@ -4,6 +4,8 @@ import type { Route } from "./+types/login";
 import { useState } from "react";
 import Footer from "~/components/footer";
 
+const apiURL = import.meta.env.VITE_API_URL;
+
 export function meta({ }: Route.MetaArgs) {
   return [
     { title: "Login - FileShare" },
@@ -29,7 +31,7 @@ export default function Login() {
 
     if (Object.values(newErrors).some((err) => err !== "")) return;
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const res = await fetch(`${apiURL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })

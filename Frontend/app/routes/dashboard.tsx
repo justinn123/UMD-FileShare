@@ -7,6 +7,8 @@ import Footer from "~/components/footer";
 import Navbar from "~/components/header/navbar";
 import HomeFeatures from "~/components/homeFeatures";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 export function meta({ }: Route.MetaArgs) {
   return [
     { title: "Dashboard" },
@@ -26,7 +28,7 @@ export default function Dashboard() {
       return;
     }
 
-    fetch("http://localhost:5000/api/auth/verify", {
+    fetch(`${apiUrl}/api/auth/verify`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {

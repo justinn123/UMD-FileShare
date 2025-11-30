@@ -10,6 +10,8 @@ type Course = {
   title: string;
 };
 
+const apiURL = import.meta.env.VITE_API_URL;
+
 export default function CoursesIndex() {
   const [loading, setLoading] = useState(true);
   const [courses, setCourses] = useState<Course[]>([]);
@@ -22,8 +24,8 @@ export default function CoursesIndex() {
     async function fetchCourses() {
       const query = debouncedSearch.trim();
       const url = query
-        ? `http://localhost:5000/api/courses?limit=10&search=${query}`
-        : `http://localhost:5000/api/courses?limit=10`;
+        ? `${apiURL}/api/courses?limit=10&search=${query}`
+        : `${apiURL}/api/courses?limit=10`;
 
       const res = await fetch(url);
       const data = await res.json();

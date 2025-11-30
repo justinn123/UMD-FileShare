@@ -22,6 +22,8 @@ type Course = {
   files?: FileItem[];
 };
 
+const apiURL = import.meta.env.VITE_API_URL;
+
 // --------------------
 // Component
 // --------------------
@@ -41,7 +43,7 @@ export default function CoursePage() {
     async function fetchCourse() {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/courses/${encodeURIComponent(name || "")}`
+          `${apiURL}/api/courses/${encodeURIComponent(name || "")}`
         );
         if (!res.ok) throw new Error("Course not found");
         const data: Course = await res.json();
@@ -67,7 +69,7 @@ export default function CoursePage() {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/courses/${course.name}/upload`,
+        `${apiURL}/api/courses/${course.name}/upload`,
         {
           method: "POST",
           body: formData,
