@@ -1,8 +1,7 @@
 import Course from "../models/Course.js";
 import File from "../models/File.js";
 import multer from "multer";
-import path from "path";
-import fs from "fs";
+import { supabase } from "../supabaseClient.js";
 
 // GET /api/courses?limit=10&search=...
 export const getCourses = async (req, res) => {
@@ -48,24 +47,11 @@ export const getCourseByName = async (req, res) => {
   }
 };
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = path.join(process.cwd(), "uploads");
-    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const basename = path.basename(file.originalname, ext);
-    cb(null, `${Date.now()}-${basename}${ext}`);
-  },
-});
-
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 export const uploadCourseFile = [
   upload.single("file"),
-
   async (req, res) => {
     try {
       const courseName = req.params.name;
@@ -76,20 +62,41 @@ export const uploadCourseFile = [
       const course = await Course.findOne({ name: courseName });
       if (!course) return res.status(404).json({ error: "Course not found" });
 
+      // Upload file to Supabase Storage
+      // Upload to Supabase Storage
+      const filePath = `${course._id}/${Date.now()}-${file.originalname}`;
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("course-files")
+        .upload(filePath, file.buffer, {
+          contentType: file.mimetype,
+          upsert: true,
+        });
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from("course-files")
+        .getPublicUrl(filePath);
+
+      if (!publicUrl) throw new Error("Failed to get public URL");
+
+      // Save to MongoDB
       const savedFile = await File.create({
-        filename: file.filename,
-        url: `/uploads/${file.filename}`,
-        uploadedBy: req.user?._id || null, // optional if no auth yet
+        filename: file.originalname,
+        url: publicUrl, // <-- this was missing before
+        uploadedBy: req.user?._id || null,
         course: course._id,
-        fileType: file.mimetype.startsWith("image/") ? "image"
-          : file.mimetype.startsWith("video/") ? "video"
-          : file.mimetype === "application/pdf" ? "document"
-          : "other",
+        fileType: file.mimetype.startsWith("image/")
+          ? "image"
+          : file.mimetype.startsWith("video/")
+            ? "video"
+            : file.mimetype === "application/pdf"
+              ? "document"
+              : "other",
       });
 
-      if (!course.files) course.files = [];
 
-
+      course.files = course.files || [];
       course.files.push(savedFile._id);
       await course.save();
 
@@ -98,5 +105,5 @@ export const uploadCourseFile = [
       console.error(err);
       res.status(500).json({ error: "Server error" });
     }
-  }
+  },
 ];

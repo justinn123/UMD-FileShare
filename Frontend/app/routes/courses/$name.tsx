@@ -155,7 +155,7 @@ export default function CoursePage() {
               {course.files.map((file) => (
                 <li key={file._id}>
                   <a
-                    href={`http://localhost:5000${file.url}`}
+                    href={file.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline"
