@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import DesktopMenu from './desktopMenu';
 import HamburgerBtn from './hamburgerBtn';
 import MobileMenu from './mobileMenu';
 
 
 export default function Navbar() {
+  const location = useLocation();
+  const loggedIn = location.pathname !== '/';
+
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -26,14 +29,14 @@ export default function Navbar() {
       <Link to='/'><h1 className="text-2xl font-bold">UMD FileShare</h1></Link>
 
       {/* Desktop Buttons */}
-      <DesktopMenu />
+      <DesktopMenu loggedIn={loggedIn}/>
 
       <div ref={menuRef} className="md:hidden">
         {/* Hamburger Button */}
         <HamburgerBtn open={open} setOpen={setOpen} />
 
         {/* Mobile Dropdown */}
-        <MobileMenu open={open} />
+        <MobileMenu open={open} loggedIn={loggedIn}/>
       </div>
     </nav>
   );

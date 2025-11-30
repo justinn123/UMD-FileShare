@@ -4,6 +4,7 @@ import HomeFeatures from "~/components/homeFeatures";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import Footer from "~/components/footer";
+import Navbar from "~/components/header/navbar";
 
 const apiURL = import.meta.env.VITE_API_URL;
 
@@ -32,27 +33,7 @@ export default function HomePage() {
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="flex-grow">
         {/* NAVBAR */}
-        <nav className="w-full border-b border-gray-200 dark:border-gray-700 py-4 px-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">UMD FileShare</h1>
-
-          <div className="space-x-4">
-            <Link
-              to="/login"
-              className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600
-                       hover:bg-gray-200 dark:hover:bg-gray-700 transition"
-            >
-              Login
-            </Link>
-
-            <Link
-              to="/signup"
-              className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 
-                       text-white transition"
-            >
-              Sign Up
-            </Link>
-          </div>
-        </nav>
+        <Navbar />
 
         {/* HERO SECTION */}
         <section className="px-6 py-20 text-center">
