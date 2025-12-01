@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
 import Navbar from "~/components/header/navbar";
@@ -30,13 +30,20 @@ const apiURL = import.meta.env.VITE_API_URL;
 export default function CoursePage() {
   const { name } = useParams<{ name: string }>();
   const [course, setCourse] = useState<Course | null>(null);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   // --------------------
   // Fetch course
   // --------------------
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setLoggedIn(!!token);
+  }, []);
+
   useEffect(() => {
     if (!name) return;
 
@@ -45,13 +52,28 @@ export default function CoursePage() {
         const res = await fetch(
           `${apiURL}/api/courses/${encodeURIComponent(name || "")}`
         );
-        if (!res.ok) throw new Error("Course not found");
+
+        if (res.status === 404) {
+          // Course does not exist
+          setError("not-found");
+          return;
+        }
+
+        if (!res.ok) {
+          // Some other server or network error
+          setError("api-failure");
+          return;
+        }
+
         const data: Course = await res.json();
         setCourse(data);
+        setError(""); // clear previous errors
       } catch {
-        setError(true);
+        // Network error or other unexpected errors
+        setError("api-failure");
       }
     }
+
 
     fetchCourse();
   }, [name]);
@@ -95,7 +117,15 @@ export default function CoursePage() {
     }
   }
 
-  if (error) return <p className="text-red-500">Course not found</p>;
+  if (error === "not-found") return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+      <h1 className="text-4xl font-bold">Course Not Found</h1>
+      <p className="mt-2 text-gray-600">The course you're looking for does not exist.</p>
+      <Link to="/courses" className="text-blue-600 underline">Back to courses</Link>
+    </div>
+  );
+  if (error === "api-failure") return <p className="text-red-500">Server Error. Please try again later.</p>;
+
   if (!course) return <p>Loading course...</p>;
 
   return (
@@ -115,25 +145,25 @@ export default function CoursePage() {
         <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-900 flex flex-col items-center">
           <h3 className="text-xl font-semibold mb-2">Upload File</h3>
 
-          <Dropzone onDrop={(acceptedFiles) => setFile(acceptedFiles[0])} multiple={false}>
+          <Dropzone disabled={!loggedIn} onDrop={(acceptedFiles) => setFile(acceptedFiles[0])} multiple={false}>
             {({ getRootProps, getInputProps, isDragActive }) => (
               <section>
                 <div
                   {...getRootProps()}
-                  className={`p-6 border-2 border-dashed rounded-lg text-center cursor-pointer transition ${
-                    isDragActive
-                      ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                      : "border-gray-300 dark:border-gray-600"
-                  }`}
+                  className={`p-6 border-2 border-dashed rounded-lg text-center cursor-pointer transition ${isDragActive
+                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                    : "border-gray-300 dark:border-gray-600"
+                    }`}
                 >
                   <input {...getInputProps()} />
-                  <p>
+                    {!loggedIn && (<p>Must be logged in to upload</p>)}
+                    {loggedIn && (<p>
                     {isDragActive
                       ? "Drop the file here ..."
                       : file
-                      ? `Selected file: ${file.name}`
-                      : "Drag and drop a file here, or click to select"}
-                  </p>
+                        ? `Selected file: ${file.name}`
+                        : "Drag and drop a file here, or click to select"}
+                  </p>)}
                 </div>
               </section>
             )}
@@ -141,7 +171,7 @@ export default function CoursePage() {
 
           <button
             onClick={handleUpload}
-            disabled={!file || uploading}
+            disabled={!file || uploading || !loggedIn}
             className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400"
           >
             {uploading ? "Uploading..." : "Upload"}

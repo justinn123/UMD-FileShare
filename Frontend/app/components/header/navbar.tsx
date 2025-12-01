@@ -1,17 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useLocation } from 'react-router'
+import { Link } from 'react-router'
 import DesktopMenu from './desktopMenu';
 import HamburgerBtn from './hamburgerBtn';
 import MobileMenu from './mobileMenu';
 
 
 export default function Navbar() {
-  const location = useLocation();
-  const loggedIn = location.pathname !== '/';
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    setLoggedIn(!!token);
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setOpen(false);

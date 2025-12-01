@@ -14,6 +14,7 @@ const apiURL = import.meta.env.VITE_API_URL;
 
 export default function CoursesIndex() {
   const [loading, setLoading] = useState(true);
+  const [apiFailed, setApiFailed] = useState(false);
   const [courses, setCourses] = useState<Course[]>([]);
   const [search, setSearch] = useState("");
 
@@ -27,10 +28,21 @@ export default function CoursesIndex() {
         ? `${apiURL}/api/courses?limit=10&search=${query}`
         : `${apiURL}/api/courses?limit=10`;
 
-      const res = await fetch(url);
-      const data = await res.json();
-      setCourses(data);
-      setLoading(false);
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!res.ok) {
+          setApiFailed(true);
+          return;
+        }
+
+        setCourses(data);
+      } catch (err) {
+        setApiFailed(true);
+      } finally {
+        setLoading(false);
+      }
     }
 
     fetchCourses();
@@ -67,7 +79,12 @@ export default function CoursesIndex() {
             {loading && (
               <p className="text-center text-gray-500 text-lg animate-pulse">Loading...</p>
             )}
-            {!loading && (courses.length === 0 ? (
+
+            {apiFailed && !loading && (
+              <p className="text-center text-red-500 text-lg">Server Error. Please try again later.</p>
+            )}
+
+            {!loading && !apiFailed && (courses.length === 0 ? (
               <p className="text-center text-gray-500 text-lg">
                 No courses found.
               </p>

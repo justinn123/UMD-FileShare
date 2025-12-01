@@ -39,11 +39,11 @@ export default function HomePage() {
           </p>
 
           <Link
-            to="/signup"
-            className="px-8 py-3 text-lg rounded-lg bg-red-500 hover:bg-red-600 
+            to="/courses"
+            className="px-5 py-3 text-lg rounded-lg bg-red-500 hover:bg-red-600 
                      text-white transition"
           >
-            Get Started
+            Browse Courses
           </Link>
         </section>
 

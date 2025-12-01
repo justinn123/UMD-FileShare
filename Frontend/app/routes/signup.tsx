@@ -3,6 +3,8 @@ import AuthInput from "../components/auth/authInput";
 import Footer from "~/components/footer";
 import type { Route } from "./+types/signup";
 import { useState } from "react";
+import Navbar from "~/components/header/navbar";
+import { redirect } from "react-router";
 
 const apiURL = import.meta.env.VITE_API_URL;
 
@@ -13,11 +15,20 @@ export function meta({ }: Route.MetaArgs) {
   ];
 }
 
+export const clientLoader = () => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    return redirect("/dashboard");
+  }
+  return null;
+}
+
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "", confirmPassword: "" });
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,6 +46,8 @@ export default function Signup() {
     setErrors(newErrors);
 
     if (Object.values(newErrors).some((err) => err !== "")) return;
+
+    setLoading(true);
     try {
       const res = await fetch(`${apiURL}/api/auth/signup`, {
         method: "POST",
@@ -45,6 +58,7 @@ export default function Signup() {
       const data = await res.json();
 
       if (!res.ok) {
+        setLoading(false);
         setErrors((prev) => ({ ...prev, email: data.message }));
         return;
       }
@@ -56,12 +70,15 @@ export default function Signup() {
 
       window.location.href = "/dashboard";
     } catch (error) {
+      setLoading(false);
       console.error("Signup failed:", error);
+      setErrors({ ...errors, confirmPassword: "Server Error. Please try again later." });
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+      <Navbar/>
       <div className="flex flex-grow items-center justify-center">
         <AuthLayout
           title="Sign Up"
@@ -103,11 +120,16 @@ export default function Signup() {
             />
             <button
               type="submit"
-              className="w-full font-semibold py-2 px-4 rounded-lg transition-colors 
-            bg-gray-900 dark:bg-gray-100 hover:bg-black dark:hover:bg-gray-300 
-            text-white dark:text-gray-900"
+              disabled={loading}
+              className={`w-full font-semibold py-2 px-4 rounded-lg transition-colors 
+                          bg-gray-900 dark:bg-gray-100 hover:bg-black dark:hover:bg-gray-300 
+                          text-white dark:text-gray-900 flex items-center justify-center`}
             >
-              Sign Up
+              {loading ? (
+                <div className="h-5 w-5 border-2 border-white dark:border-gray-900 border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                "Sign Up"
+              )}
             </button>
           </form>
         </AuthLayout>

@@ -4,6 +4,7 @@ import type { Route } from "./+types/login";
 import { useState } from "react";
 import Footer from "~/components/footer";
 import { redirect } from "react-router";
+import Navbar from "~/components/header/navbar";
 
 const apiURL = import.meta.env.VITE_API_URL;
 
@@ -26,6 +27,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,6 +40,9 @@ export default function Login() {
     setErrors(newErrors);
 
     if (Object.values(newErrors).some((err) => err !== "")) return;
+
+    setLoading(true);
+
     try {
       const res = await fetch(`${apiURL}/api/auth/login`, {
         method: "POST",
@@ -47,6 +52,7 @@ export default function Login() {
       const data = await res.json();
 
       if (!res.ok) {
+        setLoading(false);
         setErrors({ ...errors, password: data.message || "Login failed. Please try again." });
         return;
       }
@@ -57,12 +63,14 @@ export default function Login() {
       window.location.href = "/dashboard";
     } catch (err) {
       console.error("Login error:", err);
+      setLoading(false);
       setErrors({ ...errors, password: "Server Error. Please try again later." });
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+      <Navbar />
       <div className="flex-grow items-center justify-center flex">
         <AuthLayout
           title="Login"
@@ -94,11 +102,16 @@ export default function Login() {
             />
             <button
               type="submit"
-              className="w-full font-semibold py-2 px-4 rounded-lg transition-colors 
-            bg-gray-900 dark:bg-gray-100 hover:bg-black dark:hover:bg-gray-300 
-            text-white dark:text-gray-900"
+              disabled={loading}
+              className={`w-full font-semibold py-2 px-4 rounded-lg transition-colors 
+                          bg-gray-900 dark:bg-gray-100 hover:bg-black dark:hover:bg-gray-300 
+                          text-white dark:text-gray-900 flex items-center justify-center`}
             >
-              Log In
+              {loading ? (
+                <div className="h-5 w-5 border-2 border-white dark:border-gray-900 border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                "Log In"
+              )}
             </button>
           </form>
         </AuthLayout>

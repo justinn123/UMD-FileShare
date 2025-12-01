@@ -5,6 +5,7 @@ export default [
     route("login", "routes/login.tsx"),
     route("signup", "routes/signup.tsx"),
     route("dashboard", "routes/dashboard.tsx"),
+    route("unfinished", "routes/unfinished.tsx"),
     route("courses", "routes/courses/_index.tsx"),
     route("courses/:name", "routes/courses/$name.tsx"),
     route("*", "routes/notFound.tsx"),

@@ -18,13 +18,13 @@ export const clientLoader = async () => {
 
   if (!token) {
     return redirect("/login");
-  } 
-  
+  }
+
   const cachedUser = localStorage.getItem("user");
   if (cachedUser) {
     return JSON.parse(cachedUser);
   }
-  
+
   try {
     const res = await fetch(`${apiUrl}/api/auth/verify`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -55,11 +55,13 @@ export default function Dashboard() {
         </section>
 
         <section className="px-6 grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          <HomeFeatures
-            home={false}
-            title="Saved Courses"
-            description="Browse slides, labs, notes, or assignments for your classes."
-          />
+          <Link to="/unfinished">
+            <HomeFeatures
+              home={false}
+              title="Saved Courses"
+              description="Browse slides, labs, notes, or assignments for your classes."
+            />
+          </Link>
           <Link to="/courses">
             <HomeFeatures
               home={false}
@@ -67,11 +69,13 @@ export default function Dashboard() {
               description="Find uploaded materials by course and department."
             />
           </Link>
-          <HomeFeatures
-            home={false}
-            title="My Files"
-            description="Manage all the files you've uploaded."
-          />
+          <Link to="/unfinished">
+            <HomeFeatures
+              home={false}
+              title="My Files"
+              description="Manage all the files you've uploaded."
+            />
+          </Link>
         </section>
       </div>
       <Footer />
