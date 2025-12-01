@@ -60,15 +60,12 @@ export default function CoursesIndex() {
             dark:bg-gray-800 dark:border-gray-700
           "
             />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-              🔍
-            </span>
           </div>
 
           {/* Results */}
           <div className="space-y-4">
             {loading && (
-              <p className="text-center text-gray-500 text-lg">Loading...</p>
+              <p className="text-center text-gray-500 text-lg animate-pulse">Loading...</p>
             )}
             {!loading && (courses.length === 0 ? (
               <p className="text-center text-gray-500 text-lg">

@@ -3,6 +3,7 @@ import AuthInput from "../components/auth/authInput";
 import type { Route } from "./+types/login";
 import { useState } from "react";
 import Footer from "~/components/footer";
+import { redirect } from "react-router";
 
 const apiURL = import.meta.env.VITE_API_URL;
 
@@ -13,6 +14,13 @@ export function meta({ }: Route.MetaArgs) {
   ];
 }
 
+export const clientLoader = () => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    return redirect("/dashboard");
+  }
+  return null;
+}
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -95,7 +103,7 @@ export default function Login() {
           </form>
         </AuthLayout>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

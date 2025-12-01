@@ -1,8 +1,5 @@
 import type { Route } from "./+types/dashboard";
-import { Link } from "react-router";
-import { useState } from "react";
-import { useEffect } from "react"
-import { useNavigate } from "react-router";
+import { Link, redirect, useLoaderData } from "react-router";
 import Footer from "~/components/footer";
 import Navbar from "~/components/header/navbar";
 import HomeFeatures from "~/components/homeFeatures";
@@ -16,37 +13,35 @@ export function meta({ }: Route.MetaArgs) {
   ];
 }
 
-export default function Dashboard() {
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<{ id?: string; email?: string }>({});
-  const navigate = useNavigate();
+export const clientLoader = async () => {
+  const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
-    fetch(`${apiUrl}/api/auth/verify`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Token invalid");
-        return res.json();
-      })
-      .then((data) => setUser(data.user))
-      .catch(() => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        navigate("/login");
-      }).finally(() => setLoading(false));
-  }, []);
-
-  if (loading) {
-    return <div className="text-center mt-20">Loading...</div>;
+  if (!token) {
+    return redirect("/login");
+  } 
+  
+  const cachedUser = localStorage.getItem("user");
+  if (cachedUser) {
+    return JSON.parse(cachedUser);
   }
+  
+  try {
+    const res = await fetch(`${apiUrl}/api/auth/verify`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error("Token Invalid");
+    const data = await res.json();
+    return data.user;
 
+  } catch {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    return redirect("/login");
+  }
+};
+
+export default function Dashboard() {
+  const user = useLoaderData() as { id?: string; email?: string };
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="flex-grow">

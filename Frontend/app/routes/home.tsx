@@ -1,45 +1,26 @@
 import type { Route } from "./+types/home";
-import { useState } from "react";
-import {Link} from "react-router"
+import {Link, redirect} from "react-router"
 import HomeFeatures from "~/components/homeFeatures";
-import { useEffect } from "react";
-import { useNavigate } from "react-router";
 import Footer from "~/components/footer";
 import Navbar from "~/components/header/navbar";
 
-const apiURL = import.meta.env.VITE_API_URL;
+export const meta = ({ }: Route.MetaArgs) => {
+  return [
+    { title: "Home - UMD FileShare" },
+    { name: "description", content: "Share and browse course files for UMD classes." },
+  ];
+}
+
+export const clientLoader = () => {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    return redirect("/dashboard");
+  }
+  return null;
+};
 
 export default function HomePage() {
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setLoading(false);
-      return;
-    }
-
-    fetch(`${apiURL}/api/auth/verify`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Invalid token");
-        return res.json();
-      })
-      .then(() => {
-        navigate("/dashboard");
-      })
-      .catch(() => {
-        localStorage.removeItem("token");
-      })
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) {
-    return <div className="text-center mt-20">Loading...</div>;
-  }
-
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="flex-grow">
