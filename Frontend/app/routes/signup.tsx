@@ -61,7 +61,11 @@ export default function Signup() {
 
       if (!res.ok) {
         setLoading(false);
+        if (data.message === "Email already being used")
         setErrors((prev) => ({ ...prev, email: data.message }));
+
+        if (data.message === "Username already taken")
+          setErrors((prev) => ({...prev, username: data.message}))
         return;
       }
 
