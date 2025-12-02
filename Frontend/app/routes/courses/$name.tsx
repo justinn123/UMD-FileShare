@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
 import Navbar from "~/components/header/navbar";
+import Footer from "~/components/footer";
 
 // --------------------
 // Types
@@ -131,7 +132,7 @@ export default function CoursePage() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <Navbar />
-      <div className="p-6 space-y-6">
+      <div className="flex-grow p-6 space-y-6">
         {/* Course Info */}
         <div>
           <h1 className="text-3xl font-bold">{course.name}</h1>
@@ -202,6 +203,7 @@ export default function CoursePage() {
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

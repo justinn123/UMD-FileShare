@@ -27,7 +27,7 @@ export default function Navbar() {
 
   return (
     <nav className="w-full border-b border-gray-200 dark:border-gray-700 py-4 px-6 flex items-center justify-between">
-      <Link to='/'><h1 className="text-2xl font-bold">UMD FileShare</h1></Link>
+      <Link to='/'><h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 transform transition-transform duration-200 hover:scale-105">UMD FileShare</h1></Link>
 
       {/* Desktop Buttons */}
       <DesktopMenu loggedIn={loggedIn}/>
@@ -37,7 +37,7 @@ export default function Navbar() {
         <HamburgerBtn open={open} setOpen={setOpen} />
 
         {/* Mobile Dropdown */}
-        <MobileMenu open={open} loggedIn={loggedIn}/>
+        <MobileMenu open={open} loggedIn={loggedIn} />
       </div>
     </nav>
   );
