@@ -24,17 +24,16 @@ export const clientLoader = () => {
 }
 
 export default function Login() {
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({ identifier: "", password: "" });
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newErrors = { email: "", password: "" };
+    const newErrors = { identifier: "", password: "" };
 
-    if (!email.trim()) newErrors.email = "Email is required.";
-    else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = "Please enter a valid email.";
+    if (!identifier.trim()) newErrors.identifier = "Identifier is required.";
     if (!password) newErrors.password = "Password is required.";
 
     setErrors(newErrors);
@@ -47,7 +46,7 @@ export default function Login() {
       const res = await fetch(`${apiURL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ identifier, password })
       });
       const data = await res.json();
 
@@ -81,14 +80,14 @@ export default function Login() {
         >
           <form onSubmit={handleSubmit} noValidate className="space-y-4">
             <AuthInput
-              type="email"
-              placeholder="Email Address"
-              value={email}
+              type="identifier"
+              placeholder="Email or Username"
+              value={identifier}
               onChange={(e) => {
-                setEmail(e.target.value);
-                if (errors.email) setErrors({ ...errors, email: "" });
+                setIdentifier(e.target.value);
+                if (errors.identifier) setErrors({ ...errors, identifier: "" });
               }}
-              error={errors.email}
+              error={errors.identifier}
             />
             <AuthInput
               type="password"

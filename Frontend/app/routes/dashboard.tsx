@@ -41,14 +41,14 @@ export const clientLoader = async () => {
 };
 
 export default function Dashboard() {
-  const user = useLoaderData() as { id?: string; email?: string };
+  const user = useLoaderData() as { id?: string; username?: string };
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <div className="flex-grow">
         <Navbar />
 
         <section className="px-6 py-16 text-center">
-          <h2 className="text-3xl font-bold overflow-hidden text-ellipsis ">Welcome back, {user.email}</h2>
+          <h2 className="text-3xl font-bold overflow-hidden text-ellipsis ">Welcome back, {user.username}</h2>
           <p className="text-lg text-gray-600 dark:text-gray-300 mt-2">
             What would you like to do today?
           </p>

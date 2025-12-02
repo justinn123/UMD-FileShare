@@ -23,6 +23,7 @@ type Course = {
   files?: FileItem[];
 };
 
+const maxFileSize = 20 * 1024 * 1024
 const apiURL = import.meta.env.VITE_API_URL;
 
 // --------------------
@@ -32,6 +33,7 @@ export default function CoursePage() {
   const { name } = useParams<{ name: string }>();
   const [course, setCourse] = useState<Course | null>(null);
   const [error, setError] = useState("");
+  const [fileError, setFileError] = useState("")
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -146,24 +148,42 @@ export default function CoursePage() {
         <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-900 flex flex-col items-center">
           <h3 className="text-xl font-semibold mb-2">Upload File</h3>
 
-          <Dropzone disabled={!loggedIn} onDrop={(acceptedFiles) => setFile(acceptedFiles[0])} multiple={false}>
+          <Dropzone
+            disabled={!loggedIn}
+            onDrop={(acceptedFiles) => setFile(acceptedFiles[0])}
+            multiple={false}
+            maxFiles={1}
+            maxSize={maxFileSize}
+            onDropRejected={(rejections) => {
+              if (rejections[0].errors[0].code === "file-too-large") {
+                setFileError("File exceeds the 20 MB limit. Please upload a different file.");
+              }
+            }}
+            onDragEnter={() => setFileError("")}
+            onFileDialogOpen={() => {setFileError(""); setFile(null)}}
+          >
             {({ getRootProps, getInputProps, isDragActive }) => (
-              <section>
+              <section className="w-full max-w-2xl">
                 <div
                   {...getRootProps()}
-                  className={`p-6 border-2 border-dashed rounded-lg text-center cursor-pointer transition ${isDragActive
-                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                    : "border-gray-300 dark:border-gray-600"
+                  className={`p-10 text-lg border-2 border-dashed rounded-lg text-center cursor-pointer transition
+                    ${fileError
+                      ? "border-red-500 bg-red-50 dark:bg-red-900/20"
+                      : isDragActive
+                        ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                        : "border-gray-300 dark:border-gray-600"
                     }`}
+
                 >
                   <input {...getInputProps()} />
-                    {!loggedIn && (<p>Must be logged in to upload</p>)}
-                    {loggedIn && (<p>
+                  {!loggedIn && (<p>Must be logged in to upload</p>)}
+                  {loggedIn && (<p>
                     {isDragActive
                       ? "Drop the file here ..."
                       : file
                         ? `Selected file: ${file.name}`
-                        : "Drag and drop a file here, or click to select"}
+                        : fileError ? `${fileError}` 
+                        : "Drag and drop a file here, or click to select (20 MB max)"}
                   </p>)}
                 </div>
               </section>
