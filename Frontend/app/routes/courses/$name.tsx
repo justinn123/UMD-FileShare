@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router";
 import { useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
+import { PinIcon } from "lucide-react";
 import Navbar from "~/components/header/navbar";
 import Footer from "~/components/footer";
 
@@ -120,6 +121,11 @@ export default function CoursePage() {
     }
   }
 
+  function stripHTML(html: string) {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent || "";
+  }
+
   if (error === "not-found") return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <h1 className="text-4xl font-bold">Course Not Found</h1>
@@ -137,12 +143,30 @@ export default function CoursePage() {
       <div className="flex-grow p-6 space-y-6">
         {/* Course Info */}
         <div>
-          <h1 className="text-3xl font-bold">{course.name}</h1>
+          {/* Name + Pin Row */}
+          <div className="flex items-center gap-2">
+            <h1 className="text-3xl font-bold">{course.name}</h1>
+
+            <button
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+              title="Pin Course"
+            >
+              <PinIcon
+                className={`h-5 w-5 transition-all text-gray-500`}
+              />
+            </button>
+          </div>
+
           {course.title && (
             <h2 className="text-xl text-gray-600">{course.title}</h2>
           )}
-          {course.description && <p className="mt-4">{course.description}</p>}
+
+          {course.description && (
+            <p className="mt-4">{stripHTML(course.description)}</p>
+          )}
         </div>
+
+
 
         {/* Upload Section */}
         <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-900 flex flex-col items-center">
@@ -160,7 +184,7 @@ export default function CoursePage() {
               }
             }}
             onDragEnter={() => setFileError("")}
-            onFileDialogOpen={() => {setFileError(""); setFile(null)}}
+            onFileDialogOpen={() => { setFileError(""); setFile(null) }}
           >
             {({ getRootProps, getInputProps, isDragActive }) => (
               <section className="w-full max-w-2xl">
@@ -182,8 +206,8 @@ export default function CoursePage() {
                       ? "Drop the file here ..."
                       : file
                         ? `Selected file: ${file.name}`
-                        : fileError ? `${fileError}` 
-                        : "Drag and drop a file here, or click to select (20 MB max)"}
+                        : fileError ? `${fileError}`
+                          : "Drag and drop a file here, or click to select (20 MB max)"}
                   </p>)}
                 </div>
               </section>
