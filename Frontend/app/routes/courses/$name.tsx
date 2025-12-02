@@ -166,7 +166,7 @@ export default function CoursePage() {
               <section className="w-full max-w-2xl">
                 <div
                   {...getRootProps()}
-                  className={`p-10 text-lg border-2 border-dashed rounded-lg text-center cursor-pointer transition
+                  className={`${!loggedIn && ("hover:cursor-not-allowed")} p-10 text-lg border-2 border-dashed rounded-lg text-center cursor-pointer transition}
                     ${fileError
                       ? "border-red-500 bg-red-50 dark:bg-red-900/20"
                       : isDragActive
@@ -193,7 +193,7 @@ export default function CoursePage() {
           <button
             onClick={handleUpload}
             disabled={!file || uploading || !loggedIn}
-            className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400"
+            className={`mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 ${!loggedIn && ("hover:cursor-not-allowed")}`}
           >
             {uploading ? "Uploading..." : "Upload"}
           </button>
