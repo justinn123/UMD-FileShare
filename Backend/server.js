@@ -6,6 +6,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import authRoutes from "./routes/authRoutes.js";
 import coursesRoutes from "./routes/courseRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -17,7 +18,7 @@ app.use(cors({
     "http://localhost:5173"
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization", "x-user-id"],
   credentials: true
 }));
 
@@ -26,6 +27,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", coursesRoutes);
+app.use("/api/users", userRoutes);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

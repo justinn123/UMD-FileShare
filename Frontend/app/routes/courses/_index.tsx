@@ -12,6 +12,13 @@ type Course = {
 
 const apiURL = import.meta.env.VITE_API_URL;
 
+export function meta({ }) {
+  return [
+    { title: "Courses - UMD FileShare" },
+    { name: "description", content: "Welcome to UMD FileShare Dashboard!" },
+  ];
+}
+
 export default function CoursesIndex() {
   const [loading, setLoading] = useState(true);
   const [apiFailed, setApiFailed] = useState(false);
