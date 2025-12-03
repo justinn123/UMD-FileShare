@@ -13,6 +13,7 @@ const app = express();
 app.use(cors({
   origin: [
     "https://umd-file-share.vercel.app",
+    "https://umd-file-share-preview.vercel.app",
     "http://localhost:5173"
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],

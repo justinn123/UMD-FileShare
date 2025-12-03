@@ -25,17 +25,19 @@ export const clientLoader = () => {
 
 export default function Signup() {
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [errors, setErrors] = useState({ email: "", password: "", confirmPassword: "" });
+  const [errors, setErrors] = useState({ email: "", username: "", password: "", confirmPassword: "" });
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newErrors = { email: "", password: "", confirmPassword: "" };
+    const newErrors = { email: "", username: "", password: "", confirmPassword: "" };
 
     if (!email.trim()) newErrors.email = "Email is required.";
     else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = "Please enter a valid email.";
+    if (!username) newErrors.username = "Username is required.";
     if (!password) newErrors.password = "Password is required.";
     else if (password.length < 6)
       newErrors.password = "Password must be at least 6 characters.";
@@ -52,14 +54,18 @@ export default function Signup() {
       const res = await fetch(`${apiURL}/api/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, username, password }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
         setLoading(false);
+        if (data.message === "Email already being used")
         setErrors((prev) => ({ ...prev, email: data.message }));
+
+        if (data.message === "Username already taken")
+          setErrors((prev) => ({...prev, username: data.message}))
         return;
       }
 
@@ -79,7 +85,7 @@ export default function Signup() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
       <Navbar/>
-      <div className="flex flex-grow items-center justify-center">
+      <div className="flex flex-grow items-center justify-center pt-15 pb-10">
         <AuthLayout
           title="Sign Up"
           subtitle="Create a new account to get started"
@@ -97,6 +103,16 @@ export default function Signup() {
                 if (errors.email) setErrors({ ...errors, email: "" });
               }}
               error={errors.email}
+            />
+            <AuthInput
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => {
+                setUsername(e.target.value);
+                if (errors.username) setErrors({...errors, username: ""});
+              }}
+              error={errors.username}
             />
             <AuthInput
               type="password"
