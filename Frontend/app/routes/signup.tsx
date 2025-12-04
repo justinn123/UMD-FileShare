@@ -73,6 +73,7 @@ export default function Signup() {
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("lastActive", Date.now().toString());
 
       window.location.href = "/dashboard";
     } catch (error) {

@@ -3,8 +3,7 @@ import { Link, redirect, useLoaderData } from "react-router";
 import Footer from "~/components/footer";
 import Navbar from "~/components/header/navbar";
 import HomeFeatures from "~/components/homeFeatures";
-
-const apiUrl = import.meta.env.VITE_API_URL;
+import { requireUser } from "~/utils/auth";
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -14,30 +13,7 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export const clientLoader = async () => {
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    return redirect("/login");
-  }
-
-  const cachedUser = localStorage.getItem("user");
-  if (cachedUser) {
-    return JSON.parse(cachedUser);
-  }
-
-  try {
-    const res = await fetch(`${apiUrl}/api/auth/verify`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (!res.ok) throw new Error("Token Invalid");
-    const data = await res.json();
-    return data.user;
-
-  } catch {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    return redirect("/login");
-  }
+  return requireUser();
 };
 
 export default function Dashboard() {

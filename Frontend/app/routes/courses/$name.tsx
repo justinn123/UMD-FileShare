@@ -1,5 +1,7 @@
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
+import { optionalUser } from "~/utils/auth";
+import toast from "react-hot-toast";
 import Navbar from "~/components/header/navbar";
 import Footer from "~/components/footer";
 import CourseInfo from "~/components/courses/courseInfo";
@@ -31,9 +33,31 @@ export default function CoursePage() {
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setLoggedIn(!!token);
+    optionalUser().then(({ user }) => {
+      if (!user) {
+        toast.custom((t) => (
+          <div
+            className="flex items-center justify-between space-x-4 p-4 rounded-lg border
+               bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-700"
+          >
+            <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+              Sign in to <b>upload files</b>
+            </span>
+            <button
+              className="ml-4 text-xs font-semibold text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100"
+              onClick={() => toast.dismiss(t.id)}
+            >
+              Dismiss
+            </button>
+          </div>
+        ));
+        setLoggedIn(false);
+      } else {
+        setLoggedIn(true);
+      }
+    });
   }, []);
+
 
   useEffect(() => {
     if (!name) return;
