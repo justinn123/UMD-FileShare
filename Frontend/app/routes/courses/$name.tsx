@@ -34,27 +34,8 @@ export default function CoursePage() {
 
   useEffect(() => {
     optionalUser().then(({ user }) => {
-      if (!user) {
-        toast.custom((t) => (
-          <div
-            className="flex items-center justify-between space-x-4 p-4 rounded-lg border
-               bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-700"
-          >
-            <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-              Sign in to <b>upload files</b>
-            </span>
-            <button
-              className="ml-4 text-xs font-semibold text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100"
-              onClick={() => toast.dismiss(t.id)}
-            >
-              Dismiss
-            </button>
-          </div>
-        ));
-        setLoggedIn(false);
-      } else {
-        setLoggedIn(true);
-      }
+      if (!user) setLoggedIn(false);
+      else setLoggedIn(true);
     });
   }, []);
 
@@ -101,6 +82,17 @@ export default function CoursePage() {
 
   if (error === "api-failure") return <p className="text-red-500">Server Error. Please try again later.</p>;
   if (!course) return <p>Loading course...</p>;
+  else
+    toast.custom((t) => (
+      <div
+        className="flex items-center justify-between space-x-4 p-4 rounded-lg border
+               bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-700"
+      >
+        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          Sign in to <b>upload files</b>
+        </span>
+      </div>
+    ), {duration: 3000});
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
