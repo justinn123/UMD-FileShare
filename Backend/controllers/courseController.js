@@ -47,6 +47,26 @@ export const getCourseByName = async (req, res) => {
   }
 };
 
+// POST /api/courses/byIds
+export const getCoursesByIds = async (req, res) => {
+  try {
+    const { ids } = req.body;
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.json([]);
+    }
+
+    const courses = await Course.find({
+      _id: { $in: ids },
+    });
+
+    res.json(courses);
+  } catch (err) {
+    console.error("Error fetching courses by IDs:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
