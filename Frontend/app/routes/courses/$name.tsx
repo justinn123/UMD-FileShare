@@ -1,5 +1,6 @@
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
+import { optionalUser } from "~/utils/auth";
 import Navbar from "~/components/header/navbar";
 import Footer from "~/components/footer";
 import CourseInfo from "~/components/courses/courseInfo";
@@ -31,9 +32,15 @@ export default function CoursePage() {
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setLoggedIn(!!token);
+    optionalUser().then(({ user }) => {
+      if (!user) {
+        setLoggedIn(false);
+      } else {
+        setLoggedIn(true);
+      }
+    });
   }, []);
+
 
   useEffect(() => {
     if (!name) return;

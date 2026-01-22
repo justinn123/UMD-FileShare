@@ -1,6 +1,6 @@
 import express from "express";
 import {signup, login} from "../controllers/authController.js";
-import { requireAuth } from "../middleware/authMiddleware.js";
+import { requireAuth, refreshToken } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -12,7 +12,7 @@ router.get("/verify", requireAuth, (req, res) => {
     }
   });
 });
-
+router.post("/refresh", refreshToken);
 
 router.post("/signup", signup);
 router.post("/login", login);

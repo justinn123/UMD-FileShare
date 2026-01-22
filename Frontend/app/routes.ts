@@ -8,5 +8,6 @@ export default [
     route("unfinished", "routes/unfinished.tsx"),
     route("courses", "routes/courses/_index.tsx"),
     route("courses/:name", "routes/courses/$name.tsx"),
+    route("saved", "routes/savedCourses.tsx"),
     route("*", "routes/notFound.tsx"),
 ] satisfies RouteConfig;

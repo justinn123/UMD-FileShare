@@ -11,6 +11,7 @@ function stripHTML(html: string) {
 
 export default function CourseInfo({ course }: { course: Course }) {
   const [pinned, setPinned] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
 
   const storedUser = localStorage.getItem("user");
@@ -44,17 +45,15 @@ export default function CourseInfo({ course }: { course: Course }) {
     fetchPinnedStatus();
   }, [userId, course?._id]);
 
-
-
   const handlePinToggle = async () => {
-    if (!userId) {
-      alert("You must be logged in");
-      return;
-    }
+    if (!userId || loading) return;
+
+    setLoading(true);
+    const prevPinned = pinned;
+    setPinned(!pinned);
 
     try {
-      const method = pinned ? "DELETE" : "POST";
-
+      const method = prevPinned ? "DELETE" : "POST";
       const res = await fetch(`${apiURL}/api/users/pinnedCourses/${course._id}`, {
         method,
         headers: {
@@ -63,28 +62,29 @@ export default function CourseInfo({ course }: { course: Course }) {
         },
       });
 
-      if (!res.ok) throw new Error("Failed to update pin");
-
-      setPinned(!pinned);
-    } catch (err) {
-      console.error(err);
-      alert("Failed to update pinned courses");
+      if (!res.ok) throw new Error();
+    } catch {
+      setPinned(prevPinned);
+      alert("Failed to update pinned courses. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   };
+
 
   return (
     <div>
       <div className="flex items-center gap-2">
         <h1 className="text-3xl font-bold">{course.name}</h1>
-        <button
+        {loggedIn && <button
           onClick={handlePinToggle}
-          disabled={!loggedIn}
+          disabled={loading}
           className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition"
           title={pinned ? "Unpin Course" : "Pin Course"}
         >
           <PinIcon className={`h-5 w-5 transition-all ${pinned ? "text-yellow-500" : "text-gray-500"
             }`} />
-        </button>
+        </button>}
       </div>
 
       {course.title && <h2 className="text-xl text-gray-600">{course.title}</h2>}

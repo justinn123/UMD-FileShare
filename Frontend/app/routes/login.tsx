@@ -1,9 +1,11 @@
+import type { Route } from "./+types/login";
+import { useState, useEffect, useRef } from "react";
+import { redirect, useSearchParams } from "react-router";
+import toast from "react-hot-toast";
+
 import AuthLayout from "../components/auth/authLayout";
 import AuthInput from "../components/auth/authInput";
-import type { Route } from "./+types/login";
-import { useState } from "react";
 import Footer from "~/components/footer";
-import { redirect } from "react-router";
 import Navbar from "~/components/header/navbar";
 
 const apiURL = import.meta.env.VITE_API_URL;
@@ -24,10 +26,21 @@ export const clientLoader = () => {
 }
 
 export default function Login() {
+  const [searchParams] = useSearchParams();
+  const expired = searchParams.get("expired");
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ identifier: "", password: "" });
   const [loading, setLoading] = useState(false);
+
+
+  const shownToast = useRef(false);
+  useEffect(() => {
+    if (expired === "1" && !shownToast.current) {
+      toast.error("Your session expired. Please log in again.");
+      shownToast.current = true;
+    }
+  }, [expired]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,6 +71,7 @@ export default function Login() {
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("lastActive", Date.now().toString())
 
       window.location.href = "/dashboard";
     } catch (err) {

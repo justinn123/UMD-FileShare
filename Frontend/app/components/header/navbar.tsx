@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router'
+import { optionalUser } from '~/utils/auth';
 import DesktopMenu from './desktopMenu';
 import HamburgerBtn from './hamburgerBtn';
 import MobileMenu from './mobileMenu';
@@ -11,10 +12,12 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setLoggedIn(!!token);
+    optionalUser().then(({user}) => {
+      setLoggedIn(!!user);
+    })
+    
     function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      if (!menuRef?.current?.contains(event.target as Node)) {
         setOpen(false);
       }
     }

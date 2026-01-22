@@ -15,6 +15,7 @@ export default function UploadSection({
   setCourse: React.Dispatch<React.SetStateAction<Course | null>>;
   loggedIn: boolean;
 }) {
+  const [acknowledged, setAcknowledged] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -73,13 +74,12 @@ export default function UploadSection({
           <section className="w-full max-w-2xl">
             <div
               {...getRootProps()}
-              className={`${!loggedIn && "hover:cursor-not-allowed"} p-10 text-lg border-2 border-dashed rounded-lg text-center cursor-pointer transition ${
-                fileError
-                  ? "border-red-500 bg-red-50 dark:bg-red-900/20"
-                  : isDragActive
+              className={`${!loggedIn && "hover:cursor-not-allowed"} p-10 text-lg border-2 border-dashed rounded-lg text-center cursor-pointer transition ${fileError
+                ? "border-red-500 bg-red-50 dark:bg-red-900/20"
+                : isDragActive
                   ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
                   : "border-gray-300 dark:border-gray-600"
-              }`}
+                }`}
             >
               <input {...getInputProps()} />
               {!loggedIn && <p>Must be logged in to upload</p>}
@@ -88,23 +88,43 @@ export default function UploadSection({
                   {isDragActive
                     ? "Drop the file here ..."
                     : file
-                    ? `Selected file: ${file.name}`
-                    : fileError
-                    ? `${fileError}`
-                    : "Drag and drop a file here, or click to select (20 MB max)"}
+                      ? `Selected file: ${file.name}`
+                      : fileError
+                        ? `${fileError}`
+                        : "Drag and drop a file here, or click to select (20 MB max)"}
                 </p>
               )}
             </div>
           </section>
         )}
       </Dropzone>
+      <div className="mt-4 w-full max-w-2xl rounded-lg border border-red-400 bg-red-50 dark:bg-red-900/20 p-4 text-sm text-red-900 dark:text-red-200">
+        <p className="font-semibold mb-1">⚠ Academic Integrity & Upload Policy</p>
+        <p className="mb-2">
+          By uploading a file, you confirm that this material does <strong>not</strong> violate
+          academic integrity, copyright, or course policies.
+          <br />
+          <span className="font-medium">
+            Do not upload exams, answer keys, paid content, or restricted materials.
+          </span>
+        </p>
+
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={acknowledged}
+            onChange={(e) => setAcknowledged(e.target.checked)}
+            className="accent-red-600"
+          />
+          I understand and accept responsibility for this upload
+        </label>
+      </div>
 
       <button
         onClick={handleUpload}
-        disabled={!file || uploading || !loggedIn}
-        className={`mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 ${
-          !loggedIn && "hover:cursor-not-allowed"
-        }`}
+        disabled={!file || uploading || !loggedIn || !acknowledged}
+        className={`mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 ${!loggedIn && "hover:cursor-not-allowed"
+          }`}
       >
         {uploading ? "Uploading..." : "Upload"}
       </button>
