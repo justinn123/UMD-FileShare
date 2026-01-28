@@ -46,7 +46,7 @@ The platform supports user authentication, file organization by course, and a cl
 **Frontend**
 
 * React (Vite)
-* React Router
+* React Router (v7)
 * TailwindCSS
 
 **Backend**
