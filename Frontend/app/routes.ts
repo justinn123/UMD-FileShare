@@ -1,13 +1,14 @@
 import { type RouteConfig, index, route } from "@react-router/dev/routes";
 
 export default [
-    index("routes/home.tsx"),
-    route("login", "routes/login.tsx"),
-    route("signup", "routes/signup.tsx"),
-    route("dashboard", "routes/dashboard.tsx"),
-    route("unfinished", "routes/unfinished.tsx"),
-    route("courses", "routes/courses/_index.tsx"),
-    route("courses/:name", "routes/courses/$name.tsx"),
-    route("saved", "routes/savedCourses.tsx"),
-    route("*", "routes/notFound.tsx"),
+    // index("routes/home.tsx"),
+    // route("login", "routes/login.tsx"),
+    // route("signup", "routes/signup.tsx"),
+    // route("dashboard", "routes/dashboard.tsx"),
+    // route("unfinished", "routes/unfinished.tsx"),
+    // route("courses", "routes/courses/_index.tsx"),
+    // route("courses/:name", "routes/courses/$name.tsx"),
+    // route("saved", "routes/savedCourses.tsx"),
+    // route("*", "routes/notFound.tsx"),
+    index("routes/maintenance.tsx"),
 ] satisfies RouteConfig;
